@@ -1,6 +1,6 @@
-﻿let versionapp = 'Versión 02.2023';
+let versionapp = 'Versión 02.2023';
 
-let config_clave = 'EDDYMORENO';
+
 
 let root = document.getElementById('root');
 let rootMenu = document.getElementById('rootMenu');
@@ -18,11 +18,8 @@ let lbTipo = document.getElementById('lbTipo');
 divUsuario.innerText = "DESCONECTADO";
 lbTipo.innerText = "Inicie sesión";
 
-let dataEmpresas = [ 
-    {codsucursal:"6904684-0",nomsucursal:"GLINS",color:"success"}
-  ];
   
-let GlobalCodSucursal  = '6904684-0';
+let GlobalCodSucursal  = '';
 let boolObteniendoPeso = false;
 
 //variables produccion
@@ -57,9 +54,6 @@ let GlobalSelectedNoLote = '';
 
 let GlobalConfiguraciones = [];
 
-
-let GlobalConfMuestraLote = 'NO';
-let GlobalConfMostrarCategorias = 'SI';
 
 
 

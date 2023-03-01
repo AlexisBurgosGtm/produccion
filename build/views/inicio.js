@@ -444,8 +444,8 @@ function getView(){
         pesaje_bascula :()=>{
             return `
             <div class="card card-rounded shadow col-12">
-                <div class="card-body p-2">
-                    <label class="modal-title text-secondary h2" id="">Obtener peso de Báscula</label>
+                <div class="card-body p-2 bg-secondary">
+                    <label class="modal-title text-white h2" id="">Obtener peso de Báscula</label>
                 </div>
             </div>
             <br>
@@ -494,6 +494,12 @@ function getView(){
                                             <h4 class="negrita text-danger">Báscula Kilogramos</h4>
                                             <br />
                                             <div class="form-group">
+                                                <select class="form-control" id="cmbPesajeBasculasKg">
+
+                                                </select>
+                                            </div>
+                                            <br />
+                                            <div class="form-group">
                                                 <label>Peso Detectado:</label>
                                                 <div class="input-group">
                                                     <input type="number" class="form-control col-6 negrita text-info border-info" id="txtPesoKg">
@@ -521,7 +527,13 @@ function getView(){
                                         </div>
                                         <div class="col-6">
 
-                                            <h4 class="negrita text-danger">Báscula Miligramos</h4>
+                                            <h4 class="negrita text-danger">Báscula Gramos</h4>
+                                            <br />
+                                            <div class="form-group">
+                                                <select class="form-control" id="cmbPesajeBasculasGr">
+                                                
+                                                </select>
+                                            </div>
                                             <br />
                                             <div class="form-group">
                                                 <label>Peso Detectado:</label>
@@ -711,7 +723,12 @@ function addListeners(){
         let txtPesajePeso = document.getElementById('txtPesajePeso');
         
         if(Number(txtPesajePesoEsperado.value||0)==Number(txtPesajePeso.value||0)){}else{
-            funciones.AvisoError('El peso no es igual al esperado');return;
+            if(Number(txtPesajePesoEsperado.value||0)==(Number(txtPesajePeso.value||0)+Number(config_valor_permitido_mas))){
+
+            }else{
+                funciones.AvisoError('El peso no es igual al esperado');return;
+            }
+            
         };
 
         funciones.Confirmacion('¿Está seguro que desea REGISTRAR ESTE PESO?')
@@ -843,7 +860,30 @@ function addListeners(){
     });
 
 
+    getComboBasculas();
+
     funciones.slideAnimationTabs();
+
+};
+
+function getComboBasculas(){
+    let strKg = ''; let strGr ='';
+    json_basculas.map((r)=>{
+        if(r.HABILITADA=='SI'){
+            if(r.TIPO=='KG'){
+                strKg += `
+                <option value='${r.CODIGO}'>${r.NOMBRE}</option>
+            `
+            }
+            if(r.TIPO=='GR'){
+                strGr += `
+                <option value='${r.CODIGO}'>${r.NOMBRE}</option>
+            `
+            }
+        }
+    })
+    document.getElementById('cmbPesajeBasculasKg').innerHTML = strKg;
+    document.getElementById('cmbPesajeBasculasGr').innerHTML = strGr;
 
 };
 

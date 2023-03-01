@@ -1,10 +1,12 @@
-﻿const config = {
+﻿
+const config = {
 	user: 'sa',
 	password: '',
 	server: '192.168.0.200', //'25.6.228.2' //'192.168.1.147'
  	database: 'VENTAS',
 	pool: {	max: 100,	min: 0,	idleTimeoutMillis: 30000}
 };
+
 
 
 const sql = require('mssql');
