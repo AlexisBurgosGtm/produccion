@@ -1,5 +1,5 @@
-//const socket = io.connect('http://localhost:8000');
-const socket = io();
+const socket = io.connect('http://192.168.0.222:8000');
+//const socket = io();
 
 socket.on('peso', function(data, nombre){
     
