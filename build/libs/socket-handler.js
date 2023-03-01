@@ -1,4 +1,4 @@
-const socket = io.connect('http://192.168.0.222:7000');
+const socket = io.connect(config_url_servicio_basculas);
 //const socket = io();
 
 socket.on('peso', function(data, nombre){
