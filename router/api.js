@@ -549,9 +549,9 @@ function qry_insert_docproductos_salida(empnit,coddocsal,correlativosalida,codpr
                             ROW_NUMBER() OVER( ORDER BY (select PCODPROD)) AS DOC_ITEM, 
                             Recetas.PCODPROD AS CODPROD, 
                             Recetas.PCODMEDIDA AS CODMEDIDA, 
-                            ROUND(Recetas.PCANTIDAD*${cantidad},4) AS CANTIDAD, 
+                            ROUND(Recetas.PCANTIDAD*${cantidad},2) AS CANTIDAD, 
                             1 AS EQUIVALE, 
-                            ROUND(Recetas.PCANTIDAD*${cantidad},4) AS CANTIDADINV, 
+                            ROUND(Recetas.PCANTIDAD*${cantidad},2) AS CANTIDADINV, 
                             Web_Costos.COSTO, 
                             Precios.PRECIO, 
                             ROUND(Web_Costos.COSTO * Recetas.PCANTIDAD*${cantidad}, 2) AS TOTALCOSTO, 
@@ -660,27 +660,24 @@ router.post("/recetas", async(req,res)=>{
 
   if(codclatres=='TODOS'){
     qry = `
-    SELECT Productos.EMP_NIT, 
-          Productos.CODPROD, 
-          Productos.DESPROD, 
-          Precios.CODMEDIDA, 
-          Precios.EQUIVALE
-    FROM Productos LEFT OUTER JOIN
-      Precios ON Productos.CODPROD = Precios.CODPROD 
-      AND Productos.EMP_NIT = Precios.EMP_NIT
-    WHERE (Productos.EMP_NIT = '${empnit}') AND (Productos.${tabla} = '${valor}') AND (Productos.NOHABILITADO=0)`;
+SELECT        Productos.EMP_NIT, Productos.CODPROD, Productos.DESPROD, Precios.CODMEDIDA, Precios.EQUIVALE, COUNT(Recetas.PCODPROD) AS Receta
+FROM            Productos LEFT OUTER JOIN
+                         Recetas ON Productos.CODPROD = Recetas.CODPROD AND Productos.EMP_NIT = Recetas.EMP_NIT LEFT OUTER JOIN
+                         Precios ON Productos.CODPROD = Precios.CODPROD AND Productos.EMP_NIT = Precios.EMP_NIT
+ WHERE (Productos.EMP_NIT = '${empnit}') AND (Productos.${tabla} = '${valor}') AND (Productos.NOHABILITADO=0)
+GROUP BY Productos.EMP_NIT, Productos.CODPROD, Productos.DESPROD, Precios.CODMEDIDA, Precios.EQUIVALE
+HAVING        (NOT (COUNT(Recetas.PCODPROD) IN (0)))`;
+
 
   }else{
     qry = `
-    SELECT Productos.EMP_NIT, 
-          Productos.CODPROD, 
-          Productos.DESPROD, 
-          Precios.CODMEDIDA, 
-          Precios.EQUIVALE
-    FROM Productos LEFT OUTER JOIN
-      Precios ON Productos.CODPROD = Precios.CODPROD 
-      AND Productos.EMP_NIT = Precios.EMP_NIT
-    WHERE (Productos.EMP_NIT = '${empnit}') AND (Productos.CODCLATRES = '${codclatres}') AND (Productos.NOHABILITADO=0)`;
+SELECT        Productos.EMP_NIT, Productos.CODPROD, Productos.DESPROD, Precios.CODMEDIDA, Precios.EQUIVALE, COUNT(Recetas.PCODPROD) AS Receta
+FROM            Productos LEFT OUTER JOIN
+                         Recetas ON Productos.CODPROD = Recetas.CODPROD AND Productos.EMP_NIT = Recetas.EMP_NIT LEFT OUTER JOIN
+                         Precios ON Productos.CODPROD = Precios.CODPROD AND Productos.EMP_NIT = Precios.EMP_NIT
+WHERE (Productos.EMP_NIT = '${empnit}') AND (Productos.CODCLATRES = '${codclatres}') AND (Productos.NOHABILITADO=0)
+GROUP BY Productos.EMP_NIT, Productos.CODPROD, Productos.DESPROD, Precios.CODMEDIDA, Precios.EQUIVALE
+HAVING        (NOT (COUNT(Recetas.PCODPROD) IN (0)))`;
 
   }
 
@@ -700,8 +697,8 @@ router.post("/productos_receta", async(req,res)=>{
 
   if(micro_macro=='TODOS'){
     qry = `
-    SELECT        Docproductos.DOC_ITEM AS ID, Docproductos.CODPROD AS PCODPROD, Docproductos.DESCRIPCION AS DESPROD, Docproductos.CODMEDIDA AS PCODMEDIDA, Docproductos.CANTIDAD AS PCANTIDAD, 
-                           Docproductos.COSTO AS PCOSTO, Docproductos.CANTIDADINV AS PROD_UNIDADES, Docproductos.CANTIDADENVIADA AS PROD_UN_PESADAS, Web_Existencias.SALDOFINAL
+    SELECT        Docproductos.DOC_ITEM AS ID, Docproductos.CODPROD AS PCODPROD, Docproductos.DESCRIPCION AS DESPROD, Docproductos.CODMEDIDA AS PCODMEDIDA, ROUND((Docproductos.CANTIDAD),2) AS PCANTIDAD, 
+                           Docproductos.COSTO AS PCOSTO, ROUND((Docproductos.CANTIDADINV),2) AS PROD_UNIDADES, Docproductos.CANTIDADENVIADA AS PROD_UN_PESADAS, Web_Existencias.SALDOFINAL
   FROM            Docproductos LEFT OUTER JOIN
                            Web_Existencias ON Docproductos.CODPROD = Web_Existencias.CODPROD AND Docproductos.EMP_NIT = Web_Existencias.EMP_NIT LEFT OUTER JOIN
                            Productos ON Docproductos.CODPROD = Productos.CODPROD AND Docproductos.EMP_NIT = Productos.EMP_NIT
@@ -710,8 +707,8 @@ router.post("/productos_receta", async(req,res)=>{
     `
   }else{
     qry = `
-    SELECT        Docproductos.DOC_ITEM AS ID, Docproductos.CODPROD AS PCODPROD, Docproductos.DESCRIPCION AS DESPROD, Docproductos.CODMEDIDA AS PCODMEDIDA, Docproductos.CANTIDAD AS PCANTIDAD, 
-                           Docproductos.COSTO AS PCOSTO, Docproductos.CANTIDADINV AS PROD_UNIDADES, Docproductos.CANTIDADENVIADA AS PROD_UN_PESADAS, Web_Existencias.SALDOFINAL
+    SELECT        Docproductos.DOC_ITEM AS ID, Docproductos.CODPROD AS PCODPROD, Docproductos.DESCRIPCION AS DESPROD, Docproductos.CODMEDIDA AS PCODMEDIDA, ROUND((Docproductos.CANTIDAD),2) AS PCANTIDAD, 
+                           Docproductos.COSTO AS PCOSTO, ROUND((Docproductos.CANTIDADINV),2) AS PROD_UNIDADES, Docproductos.CANTIDADENVIADA AS PROD_UN_PESADAS, Web_Existencias.SALDOFINAL
   FROM            Docproductos LEFT OUTER JOIN
                            Web_Existencias ON Docproductos.CODPROD = Web_Existencias.CODPROD AND Docproductos.EMP_NIT = Web_Existencias.EMP_NIT LEFT OUTER JOIN
                            Productos ON Docproductos.CODPROD = Productos.CODPROD AND Docproductos.EMP_NIT = Productos.EMP_NIT
