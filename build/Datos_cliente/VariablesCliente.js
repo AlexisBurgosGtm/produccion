@@ -1,5 +1,5 @@
 let config_clave = 'EDDYMORENO';
-let config_url_servicio_basculas = 'http://192.168.0.222:7000';
+let config_url_servicio_basculas = 'http://192.168.0.135:7000';
 
 let config_valor_permitido_mas = 0.02;
 let config_valor_permitido_menos = -0.02;

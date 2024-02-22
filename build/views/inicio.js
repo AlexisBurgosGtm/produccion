@@ -722,13 +722,36 @@ function addListeners(){
         let txtPesajePesoEsperado = document.getElementById('txtPesajePesoEsperado');
         let txtPesajePeso = document.getElementById('txtPesajePeso');
         
-        if(Number(txtPesajePesoEsperado.value||0)==Number(txtPesajePeso.value||0)){}else{
-            if(Number(txtPesajePesoEsperado.value||0)==(Number(txtPesajePeso.value||0)+Number(config_valor_permitido_mas))){
+        let pesoEsperado = Number(txtPesajePesoEsperado.value||0);
+        let pesoAlcanzado = Number(txtPesajePeso.value||0);
+        let pesoMaximo = pesoEsperado + Number(config_valor_permitido_mas);
+        let pesoMinimo = pesoEsperado + Number(config_valor_permitido_menos);
 
+    
+        if(pesoEsperado == pesoAlcanzado){
+
+        }else{
+          
+
+            if(pesoAlcanzado > pesoEsperado){
+                    //------------- comparación mayor --------------
+                    if(pesoAlcanzado > pesoEsperado && pesoAlcanzado <= pesoMaximo){
+                        // TE DEJA PASAR SI ESTÁ DENTRO DE LA CONFIGURACIÓN MÁXIMA
+                    }else{
+                        // TE IMPIDE SEGUIR
+                        funciones.AvisoError('El peso no es igual al esperado');return;        
+                    }
             }else{
-                funciones.AvisoError('El peso no es igual al esperado');return;
+                    //----------comparación menor ---------
+                    if(pesoAlcanzado >= pesoMinimo && pesoAlcanzado <= pesoEsperado){
+                        // TE DEJA PASAR SI ESTÁ DENTRO DE LA CONFIGURACIÓN MINIMA
+                    }else{
+                        // TE IMPIDE SEGUIR
+                        funciones.AvisoError('El peso no es igual al esperado');return;        
+                    }
+
             }
-            
+                        
         };
 
         funciones.Confirmacion('¿Está seguro que desea REGISTRAR ESTE PESO?')
